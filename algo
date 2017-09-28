@@ -1,0 +1,12 @@
+Algo MAXRECTS(Tableau de Rectangles)
+DEBUT
+
+Pour chaque Rectangle R(largeur, hauteur)
+	S = Choisir la plus grande surface libre rectangulaire pouvant contenir le rectangle(sous programme)
+	Si (!S) alors
+		Impossible de mettre le rectangle
+	Sinon
+		Choisir l'orientation de la pièce(sous programme)
+		
+	
+	

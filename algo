@@ -1,12 +1,28 @@
 Algo MAXRECTS(Tableau de Rectangles)
 DEBUT
-
-Pour chaque Rectangle R(largeur, hauteur)
-	S = Choisir la plus grande surface libre rectangulaire pouvant contenir le rectangle(sous programme)
-	Si (!S) alors
+Liste_Surface = {surface totale du conteneur} 
+Pour chaque Rectangle R(largeur, hauteur) à placer
+	S = Choisir la plus grande surface libre rectangulaire pouvant contenir le rectangle(Liste_Surface)
+	Si (non S) alors
 		Impossible de mettre le rectangle
 	Sinon
-		Choisir l'orientation de la pièce(sous programme)
+		Choisir l'orientation de la pièce(R) 
+		S_rectangle = Placer_en_bas_a_gauche_surface(R,S)
+		S2,S3 = Couper_surface_restante_en_suivant_rectangle(S, S_rectangle)
+		Liste_Surface = S2 + S3 + Liste_Surface - R
 		
-	
+		Pour chaque Surface S_libre dans Liste_Surface
+			New_Liste_Surface = Couper_Surface_en_suivant_rectangle(S_libre, S_rectangle)
+			Liste_Surface = Liste_Surface + New_Liste_Surface - S_libre
+		Fin Pour
+		
+		Pour chaque chaque surface S1 dans Liste_Surface
+			Pour chaque chaque surface S2 dans Liste_Surface
+				Si S1 contient S2 en totalité, alors
+					Liste_Surface = Liste_Surface - S2
+				Fin SI
+			Fin Pour
+		Fin Pour
+	Fin Si
+Fin Pour
 	

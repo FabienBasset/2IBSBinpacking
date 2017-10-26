@@ -1,0 +1,51 @@
+Point[] Trouver_SkyLine(Volume Objet_Placé[], Volume Conteneur ) {
+
+  Point[] Skyline;
+  Int i = 0 ;
+  Point tmp ;
+  tmp.x = 0;
+  tmp.y = 0;
+  Skyline[i]=tmp;
+  Unité = 0.001;
+  Volume Extremité;
+
+  For (double c=0 ; c <= Conteneur.getLargeur ; c = c + unite) {
+	  HauteurMax = 0;
+	  Extremité = null;
+	  For (Objet in Objet_Placé) {
+		  If (c >= Objet.getx and c <= Objet.getx + Objet.getLargeur) {
+			  If (Objet.getHauteur > HauteurMax) {
+				  HauteurMax = Objet.getHauteur;
+				  If (c = Objet.getx + Objet.getLargeur) {
+					  Extremité = Objet;
+				  }
+			  }
+		  }
+	  }
+
+	  If (i = 0) {
+	  	tmp.x = 0;
+		  tmp.y = 0;
+		  Skyline[i] = tmp;
+		  i++;
+	  } Else if (Skyline[i-1].getHauteur < HauteurMax) {
+		  tmp.x = c;
+		  tmp.y = Skyline[i-1].getx;
+		  Skyline[i] = tmp;
+		  i++;
+		  tmp.x = c;
+		  tmp.y = HauteurMax;
+		  Skyline[i] = tmp;
+		  i++;
+	  }
+	
+	  If (Extremité <> null) {
+		  tmp.x = c ;
+		  tmp.y = 0 ;
+		  Extremité = null ;
+		  Skyline[i] =tmp ;
+		  i++ ;
+	  }
+  }
+  return Skyline;
+}

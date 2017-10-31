@@ -9,6 +9,8 @@ public class Volume {
 		private double hauteur;
 		private double largeur;
 		private double profondeur;
+		private static int id_next = 0;
+		private int id;
 		
 		public Volume (double x, double y, double z, double hauteur, double largeur, double profondeur)
 		{
@@ -18,9 +20,10 @@ public class Volume {
 			this.largeur = largeur;
 			this.profondeur = profondeur;
 			this.z = z;
+			this.id = this.id_next++;
 		}
 		
-		public double getAireMax(){ 
+		public double getSurfaceMax(){ 
 			double a1 = this.hauteur * this.largeur;
 			double a2 = this.hauteur * this.profondeur;
 			double a3 = this.largeur * this.profondeur;
@@ -45,7 +48,7 @@ public class Volume {
 		public double getHauteur() 	{ return hauteur; }
 		public double getLargeur() 	{ return largeur; }
 		public double getProfondeur() {	return profondeur; }	
-
+		public int getID() {	return id; }
 
 		
 		public static Volume[] generateurVolume (int nombreObjet, int largeur_min, int largeur_max, int hauteur_min, int hauteur_max, int profondeur_min, int profondeur_max)
@@ -62,308 +65,70 @@ public class Volume {
 			return(volumes);
 		}
 		
-		private static void Tri_dimension_n( Volume[] volumes, char n, boolean croissant)
+		private double getDimension(char c)
+		{
+			if(c=='x')
+				return getX();
+			else if(c=='y')
+				return getY();
+			else if(c=='z')
+				return getZ();
+			else if(c=='s')
+				return getSurfaceMax();
+			else if(c=='v')
+				return getVolume();
+			else if(c=='l')
+				return getLargeur();
+			else if(c=='h')
+				return getHauteur();
+			else if(c=='p')
+				return getProfondeur();
+			else 
+				return id;
+		}
+		
+		private static void Tri_dimension_n( Volume[] volumes, char n, boolean croissant) 
 		{
 			double check;
 			Volume tmp;
 			
-			if(n=='x') {
-				if(croissant)
+			if(croissant)
+			{
+				int j,i=0;
+				while(i<volumes.length)
 				{
-					int j,i=0;
-					while(i<volumes.length)
+					j=i+1;
+					check = volumes[i].getDimension(n);
+					while(j<volumes.length && volumes[j].getDimension(n)>=check ) j++;
+					if(j<volumes.length)
 					{
-						j=i+1;
-						check = volumes[i].getX();
-						while(j<volumes.length && volumes[j].getX()>=check ) j++;
-						if(j<volumes.length)
-						{
-							tmp=volumes[i];
-							volumes[i] = volumes[j];
-							volumes[j] = tmp;
-						}
-						else
-							i++;
+						tmp=volumes[i];
+						volumes[i] = volumes[j];
+						volumes[j] = tmp;
 					}
+					else
+						i++;
 				}
-				else
-				{
-					int j,i=0;
-					while(i<volumes.length)
-					{
-						j=i+1;
-						check = volumes[i].getX();
-						while(j<volumes.length && volumes[j].getX()<=check ) j++;
-						if(j<volumes.length)
-						{
-							tmp=volumes[i];
-							volumes[i] = volumes[j];
-							volumes[j] = tmp;
-						}
-						else
-							i++;
-					}
-				}	
-			} else if(n=='y') {
-				if(croissant)
-				{
-					int j,i=0;
-					while(i<volumes.length)
-					{
-						j=i+1;
-						check = volumes[i].getY();
-						while(j<volumes.length && volumes[j].getY()>=check ) j++;
-						if(j<volumes.length)
-						{
-							tmp=volumes[i];
-							volumes[i] = volumes[j];
-							volumes[j] = tmp;
-						}
-						else
-							i++;
-					}
-				}
-				else
-				{
-					int j,i=0;
-					while(i<volumes.length)
-					{
-						j=i+1;
-						check = volumes[i].getY();
-						while(j<volumes.length && volumes[j].getY()<=check ) j++;
-						if(j<volumes.length)
-						{
-							tmp=volumes[i];
-							volumes[i] = volumes[j];
-							volumes[j] = tmp;
-						}
-						else
-							i++;
-					}
-				}
-			} else if(n=='z') {
-				if(croissant)
-				{
-					int j,i=0;
-					while(i<volumes.length)
-					{
-						j=i+1;
-						check = volumes[i].getZ();
-						while(j<volumes.length && volumes[j].getZ()>=check ) j++;
-						if(j<volumes.length)
-						{
-							tmp=volumes[i];
-							volumes[i] = volumes[j];
-							volumes[j] = tmp;
-						}
-						else
-							i++;
-					}
-				}
-				else
-				{
-					int j,i=0;
-					while(i<volumes.length)
-					{
-						j=i+1;
-						check = volumes[i].getZ();
-						while(j<volumes.length && volumes[j].getZ()<=check ) j++;
-						if(j<volumes.length)
-						{
-							tmp=volumes[i];
-							volumes[i] = volumes[j];
-							volumes[j] = tmp;
-						}
-						else
-							i++;
-					}
-				} 
-			} else if(n=='l') {
-				if(croissant)
-				{
-					int j,i=0;
-					while(i<volumes.length)
-					{
-						j=i+1;
-						check = volumes[i].getLargeur();
-						while(j<volumes.length && volumes[j].getLargeur()>=check ) j++;
-						if(j<volumes.length)
-						{
-							tmp=volumes[i];
-							volumes[i] = volumes[j];
-							volumes[j] = tmp;
-						}
-						else
-							i++;
-					}
-				}
-				else
-				{
-					int j,i=0;
-					while(i<volumes.length)
-					{
-						j=i+1;
-						check = volumes[i].getLargeur();
-						while(j<volumes.length && volumes[j].getLargeur()<=check ) j++;
-						if(j<volumes.length)
-						{
-							tmp=volumes[i];
-							volumes[i] = volumes[j];
-							volumes[j] = tmp;
-						}
-						else
-							i++;
-					}
-				}	
-			} else if(n=='h') {
-				if(croissant)
-				{
-					int j,i=0;
-					while(i<volumes.length)
-					{
-						j=i+1;
-						check = volumes[i].getHauteur();
-						while(j<volumes.length && volumes[j].getHauteur()>=check ) j++;
-						if(j<volumes.length)
-						{
-							tmp=volumes[i];
-							volumes[i] = volumes[j];
-							volumes[j] = tmp;
-						}
-						else
-							i++;
-					}
-				}
-				else
-				{
-					int j,i=0;
-					while(i<volumes.length)
-					{
-						j=i+1;
-						check = volumes[i].getHauteur();
-						while(j<volumes.length && volumes[j].getHauteur()<=check ) j++;
-						if(j<volumes.length)
-						{
-							tmp=volumes[i];
-							volumes[i] = volumes[j];
-							volumes[j] = tmp;
-						}
-						else
-							i++;
-					}
-				}
-			} else if(n=='p') {
-				if(croissant)
-				{
-					int j,i=0;
-					while(i<volumes.length)
-					{
-						j=i+1;
-						check = volumes[i].getProfondeur();
-						while(j<volumes.length && volumes[j].getProfondeur()>=check ) j++;
-						if(j<volumes.length)
-						{
-							tmp=volumes[i];
-							volumes[i] = volumes[j];
-							volumes[j] = tmp;
-						}
-						else
-							i++;
-					}
-				}
-				else
-				{
-					int j,i=0;
-					while(i<volumes.length)
-					{
-						j=i+1;
-						check = volumes[i].getProfondeur();
-						while(j<volumes.length && volumes[j].getProfondeur()<=check ) j++;
-						if(j<volumes.length)
-						{
-							tmp=volumes[i];
-							volumes[i] = volumes[j];
-							volumes[j] = tmp;
-						}
-						else
-							i++;
-					}
-				}	
-			} else if(n=='v') {
-				if(croissant)
-				{
-					int j,i=0;
-					while(i<volumes.length)
-					{
-						j=i+1;
-						check = volumes[i].getVolume();
-						while(j<volumes.length && volumes[j].getVolume()>=check ) j++;
-						if(j<volumes.length)
-						{
-							tmp=volumes[i];
-							volumes[i] = volumes[j];
-							volumes[j] = tmp;
-						}
-						else
-							i++;
-					}
-				}
-				else
-				{
-					int j,i=0;
-					while(i<volumes.length)
-					{
-						j=i+1;
-						check = volumes[i].getVolume();
-						while(j<volumes.length && volumes[j].getVolume()<=check ) j++;
-						if(j<volumes.length)
-						{
-							tmp=volumes[i];
-							volumes[i] = volumes[j];
-							volumes[j] = tmp;
-						}
-						else
-							i++;
-					}
-				}	
-			} else if(n=='s') {
-				if(croissant)
-				{
-					int j,i=0;
-					while(i<volumes.length)
-					{
-						j=i+1;
-						check = volumes[i].getAireMax();
-						while(j<volumes.length && volumes[j].getAireMax()>=check ) j++;
-						if(j<volumes.length)
-						{
-							tmp=volumes[i];
-							volumes[i] = volumes[j];
-							volumes[j] = tmp;
-						}
-						else
-							i++;
-					}
-				}
-				else
-				{
-					int j,i=0;
-					while(i<volumes.length)
-					{
-						j=i+1;
-						check = volumes[i].getAireMax();
-						while(j<volumes.length && volumes[j].getAireMax()<=check ) j++;
-						if(j<volumes.length)
-						{
-							tmp=volumes[i];
-							volumes[i] = volumes[j];
-							volumes[j] = tmp;
-						}
-						else
-							i++;
-					}
-				}	
 			}
+			else
+			{
+				int j,i=0;
+				while(i<volumes.length)
+				{
+					j=i+1;
+					check = volumes[i].getDimension(n);
+					while(j<volumes.length && volumes[j].getDimension(n)<=check ) j++;
+					if(j<volumes.length)
+					{
+						tmp=volumes[i];
+						volumes[i] = volumes[j];
+						volumes[j] = tmp;
+					}
+					else
+						i++;
+				}
+			}	
+			
 			
 		}
 //		Trier un tableau de volumes suivant ses différentes dimensions.
@@ -384,112 +149,19 @@ public class Volume {
 			List<Double> values = new ArrayList<Double>();
 			List<List<Volume>> tmp_v = new ArrayList<List<Volume>>();
 
-			if(ordre_dim.charAt(0)=='l')
+
+			for(Volume i:v)
+				if(!values.contains(i.getDimension(ordre_dim.charAt(0)))) 
+					values.add(i.getDimension(ordre_dim.charAt(0)));
+			for(Double x:values)
 			{
+				List<Volume> l = new ArrayList<Volume>();
 				for(Volume i:v)
-					if(!values.contains(i.getLargeur())) 
-						values.add(i.getLargeur());
-				for(Double x:values)
-				{
-					List<Volume> l = new ArrayList<Volume>();
-					for(Volume i:v)
-						if(i.getLargeur()==x)
-							l.add(i);
-					tmp_v.add(l);
-				}
-			} else if(ordre_dim.charAt(0)=='h')
-			{
-				for(Volume i:v)
-					if(!values.contains(i.getHauteur())) 
-						values.add(i.getHauteur());
-				for(Double x:values)
-				{
-					List<Volume> l = new ArrayList<Volume>();
-					for(Volume i:v)
-						if(i.getHauteur()==x)
-							l.add(i);
-					tmp_v.add(l);
-				}
-			} else if(ordre_dim.charAt(0)=='p')
-			{
-				for(Volume i:v)
-					if(!values.contains(i.getProfondeur())) 
-						values.add(i.getProfondeur());
-				for(Double x:values)
-				{
-					List<Volume> l = new ArrayList<Volume>();
-					for(Volume i:v)
-						if(i.getProfondeur()==x)
-							l.add(i);
-					tmp_v.add(l);
-				}
-			} else if(ordre_dim.charAt(0)=='x')
-			{
-				for(Volume i:v)
-					if(!values.contains(i.getX())) 
-						values.add(i.getX());
-				for(Double x:values)
-				{
-					List<Volume> l = new ArrayList<Volume>();
-					for(Volume i:v)
-						if(i.getX()==x)
-							l.add(i);
-					tmp_v.add(l);
-				}
-			} else if(ordre_dim.charAt(0)=='y')
-			{
-				for(Volume i:v)
-					if(!values.contains(i.getY())) 
-						values.add(i.getY());
-				for(Double x:values)
-				{
-					List<Volume> l = new ArrayList<Volume>();
-					for(Volume i:v)
-						if(i.getY()==x)
-							l.add(i);
-					tmp_v.add(l);
-				}
-			} else if(ordre_dim.charAt(0)=='z')
-			{
-				for(Volume i:v)
-					if(!values.contains(i.getZ())) 
-						values.add(i.getZ());
-				for(Double x:values)
-				{
-					List<Volume> l = new ArrayList<Volume>();
-					for(Volume i:v)
-						if(i.getZ()==x)
-							l.add(i);
-					tmp_v.add(l);
-				}
-			} else if(ordre_dim.charAt(0)=='v')
-			{
-				for(Volume i:v)
-					if(!values.contains(i.getVolume())) 
-						values.add(i.getVolume());
-				for(Double x:values)
-				{
-					List<Volume> l = new ArrayList<Volume>();
-					for(Volume i:v)
-						if(i.getVolume()==x)
-							l.add(i);
-					tmp_v.add(l);
-				}
-			} else if(ordre_dim.charAt(0)=='s')
-			{
-				for(Volume i:v)
-					if(!values.contains(i.getAireMax())) 
-						values.add(i.getAireMax());
-				for(Double x:values)
-				{
-					List<Volume> l = new ArrayList<Volume>();
-					for(Volume i:v)
-						if(i.getAireMax()==x)
-							l.add(i);
-					tmp_v.add(l);
-				}
-			} else
-				return(v);
+					if(i.getDimension(ordre_dim.charAt(0))==x)
+						l.add(i);
+				tmp_v.add(l);
+			}
+			
 			
 			v = new Volume[volumes.length];
 			int j=0;
@@ -499,5 +171,13 @@ public class Volume {
 				
 			
 			return(v);
+		}
+
+		@Override
+		public String toString()
+		{
+			return("ID="+getID()+"  X="+getX()+"  Y="+getY()+"  Z="+getZ()
+					+ "  Largeur="+getLargeur()+"  Hauteur="+getHauteur()+"  Profondeur="+getProfondeur()
+					+ "  SurfaceMax="+getSurfaceMax()+"  Volume="+getVolume());
 		}
 }		

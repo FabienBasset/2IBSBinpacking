@@ -1,6 +1,6 @@
-import java.math.*;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class Volume {
 		private double x;
@@ -138,13 +138,19 @@ public class Volume {
 //		z: position Z du volume
 //		s: surface maximum trouvée dans un volume (face la plus grande)
 //		v: volume du volume
-		public static Volume[] Tri_dimension( Volume[] volumes, String ordre_dim, boolean croissant )
+		public static Volume[] Tri_dimension( Volume[] volumes, String ordre_dim, String croissant )
 		{
 			if(ordre_dim.length()==0)
 				return(volumes);
-			
+			String char_croissant="0";
 			Volume[] v = volumes.clone();
-			Tri_dimension_n(v, ordre_dim.charAt(0), croissant);
+			if(croissant.length()==0 || croissant.charAt(0)!='0')
+			{
+				Tri_dimension_n(v, ordre_dim.charAt(0), true);
+				char_croissant = "1";
+			}
+			else
+				Tri_dimension_n(v, ordre_dim.charAt(0), false);
 			
 			List<Double> values = new ArrayList<Double>();
 			List<List<Volume>> tmp_v = new ArrayList<List<Volume>>();
@@ -166,7 +172,7 @@ public class Volume {
 			v = new Volume[volumes.length];
 			int j=0;
 			for(List<Volume> l:tmp_v)
-				for(Volume i: Tri_dimension((Volume[])l.toArray(new Volume[l.size()]) , ordre_dim.substring(1), croissant))
+				for(Volume i: Tri_dimension((Volume[])l.toArray(new Volume[l.size()]) , ordre_dim.substring(1), char_croissant ))
 					v[j++]=i;
 				
 			

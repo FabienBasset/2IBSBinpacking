@@ -1,4 +1,4 @@
- import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -50,6 +50,49 @@ public class Volume implements Cloneable {
 		public double getProfondeur() {	return profondeur; }	
 		public int getID() {	return id; }
 
+		public static Volume[] Decouper_Volume_libre(Volume container, Volume object)
+		{
+			List<Volume> l = new ArrayList<Volume>();
+			Volume tmp1, tmp2;
+			if( object.x>=container.x && object.x<=container.x+container.largeur && object.x+object.largeur<=container.x+container.largeur &&
+					object.y>=container.y && object.y<=container.y+container.hauteur && object.y+object.hauteur<=container.y+container.hauteur &&
+					object.z>=container.z && object.z<=container.z+container.profondeur && object.z+object.profondeur<=container.z+container.profondeur
+					)
+			{
+				/* GAUCHE */
+				if(object.x-container.x != 0) 
+					l.add(new Volume(container.x,container.y,container.z, object.x-container.x, container.hauteur, container.profondeur));
+				
+				/* DROITE */
+				if(container.largeur-object.largeur-object.x+container.x != 0) 
+					l.add(new Volume(object.x+object.largeur,container.y,container.z, 
+							 container.largeur-object.largeur-object.x+container.x, container.hauteur, container.profondeur));
+				
+				/* DESSUS */
+				if(container.y+container.hauteur != object.x+object.hauteur)
+					l.add( new Volume(object.x,object.y+object.hauteur,container.z, 
+							object.largeur, container.hauteur-object.hauteur-object.y+container.y, container.profondeur));
+				
+				/* DESSOUS */
+				if(container.y+container.hauteur != object.x+object.hauteur)
+					l.add( new Volume(object.x,container.y,container.z, 
+							object.largeur, object.y-container.y, container.profondeur));
+				
+				/* DEVANT */
+				if(object.z != container.z)
+					l.add( new Volume(object.x,object.y,container.z, 
+							object.largeur, object.hauteur, object.z - container.z));
+				
+				/* ARRIERE */
+				if(object.z+object.profondeur != container.z+container.profondeur)
+					l.add( new Volume(object.x,object.y,object.z+object.profondeur, 
+							object.largeur, object.hauteur, container.profondeur-object.profondeur-object.z+container.z));
+			}
+			else
+				l.add(container);
+			
+			return(l.toArray(new Volume[l.size()]));
+		}
 		
 		public static Volume[] generateurVolume (int nombreObjet, int largeur_min, int largeur_max, int hauteur_min, int hauteur_max, int profondeur_min, int profondeur_max)
 		{

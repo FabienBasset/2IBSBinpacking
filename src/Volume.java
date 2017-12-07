@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+ import java.util.ArrayList;
 import java.util.List;
 
 
@@ -43,7 +43,7 @@ public class Volume implements Cloneable {
 		public void setY(int y) 	{ this.y = y; }
 	
 		public double getZ()			{ return z; }
-		public double setZ()			{ return z; }
+		public void setZ(int Z)			{ this.z=Z; }
 		
 		public double getHauteur() 	{ return hauteur; }
 		public double getLargeur() 	{ return largeur; }
@@ -69,12 +69,12 @@ public class Volume implements Cloneable {
 							 container.largeur-object.largeur-object.x+container.x, container.hauteur, container.profondeur));
 				
 				/* DESSUS */
-				if(container.y+container.hauteur != object.x+object.hauteur)
+				if(container.y+container.hauteur != object.y+object.hauteur)
 					l.add( new Volume(object.x,object.y+object.hauteur,container.z, 
 							object.largeur, container.hauteur-object.hauteur-object.y+container.y, container.profondeur));
 				
 				/* DESSOUS */
-				if(container.y+container.hauteur != object.x+object.hauteur)
+				if(container.y != object.y)
 					l.add( new Volume(object.x,container.y,container.z, 
 							object.largeur, object.y-container.y, container.profondeur));
 				

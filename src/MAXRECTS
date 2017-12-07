@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,24 +10,26 @@ public class MaxRects {
 		
 	}	
 	
-	public static void MaxRectsRun(Volume container, Volume[] volumes)
+	public static Volume[] MaxRectsRun(Volume container, Volume[] volumes)
 	{
 		List<Volume> dispo = new LinkedList<Volume>();
+		List<Volume> place = new LinkedList<Volume>();
 		dispo.add(container);
 		for(Volume v:volumes)
 		{
 			if(dispo.size()==0)
 			{
 				System.out.println("Plus de place. Arrêt.");
-				return;
+				return(place.toArray(new Volume[place.size()]));
 			}
 			
-			dispo = new LinkedList<Volume>(Arrays.asList(Volume.Tri_dimension(dispo.toArray(new Volume[dispo.size()]), "xyz", "000")));
+			dispo = new LinkedList<Volume>(Arrays.asList(Volume.Tri_dimension(dispo.toArray(new Volume[dispo.size()]), "v", "0")));
 			
 			boolean rentre = false;
 			rentre = v.rentre_dans(dispo.get(0), "lhp");
 			if(rentre) 
 			{
+				place.add(v.clone());
 				Volume container_choisi = dispo.get(0).clone();
 				v.setX((int) container_choisi.getX());
 				v.setY((int) container_choisi.getY());
@@ -38,11 +39,6 @@ public class MaxRects {
 				for(Volume v2:new_libres)
 					dispo.add(v2.clone());
 				
-//				for(Volume v3:dispo)
-//				{
-//					System.out.println(v3.toString());
-//					
-//				}
 //				System.out.println("");
 //				for(Volume v2:new_libres)
 //				{
@@ -61,6 +57,6 @@ public class MaxRects {
 			}
 		}
 			
-	
+		return(place.toArray(new Volume[place.size()]));
 	}
 }

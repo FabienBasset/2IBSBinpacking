@@ -1,30 +1,66 @@
-//	Algo MaxRects
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
+public class MaxRects {
+
 	
-	public MAXRECTS (Tableau de Rectangles)
+	public MaxRects ()
 	{
-	Liste_Surface = {surface totale du conteneur};
-	for(i=1;i<nombreObjet;i++) {
-		if((Volume.hauteur < Liste_Surface) and (Volume.largeur < Liste_Surface))
-			S = Volume[i];
-		else
-			if((Volume.hauteur > Liste_Surface) and (Volume.largeur > Liste_Surface))
-			System.out.println("Impossible de mettre le rectangle !");
-			else {
-//	Choisir l'orientation de la pièce(R) 
-			S_rectangle = {placer en bas à gauche};	
-			S2=Liste_Surface.hauteur - Volume.hauteur;
-			S3=Liste_Surface.largeur - Volume.largeur;
-			Liste_Surface = S2 + S3 + Liste_Surface - R;
-			}
-		for("Pour chaque Surface S_libre dans Liste_Surface") {
-			New_Liste_Surface = Couper_Surface_en_suivant_rectangle(S_libre, S_rectangle);
-			Liste_Surface = Liste_Surface + New_Liste_Surface - S_libre;
-		}
-		for("Pour chaque chaque surface S1 dans Liste_Surface") {
-			for("Pour chaque chaque surface S2 dans Liste_Surface") {
-				if(S1 > S2)
-					Liste_Surface = Liste_Surface - S2;
-			}
-		}
+		
 	}	
-	}	
+	
+	public static void MaxRectsRun(Volume container, Volume[] volumes)
+	{
+		List<Volume> dispo = new LinkedList<Volume>();
+		dispo.add(container);
+		for(Volume v:volumes)
+		{
+			if(dispo.size()==0)
+			{
+				System.out.println("Plus de place. Arrêt.");
+				return;
+			}
+			
+			dispo = new LinkedList<Volume>(Arrays.asList(Volume.Tri_dimension(dispo.toArray(new Volume[dispo.size()]), "xyz", "000")));
+			
+			boolean rentre = false;
+			rentre = v.rentre_dans(dispo.get(0), "lhp");
+			if(rentre) 
+			{
+				Volume container_choisi = dispo.get(0).clone();
+				v.setX((int) container_choisi.getX());
+				v.setY((int) container_choisi.getY());
+				v.setZ((int) container_choisi.getZ());
+				Volume[] new_libres = Volume.Decouper_Volume_libre(container_choisi, v);
+				dispo.remove(0);
+				for(Volume v2:new_libres)
+					dispo.add(v2.clone());
+				
+//				for(Volume v3:dispo)
+//				{
+//					System.out.println(v3.toString());
+//					
+//				}
+//				System.out.println("");
+//				for(Volume v2:new_libres)
+//				{
+//					for(Volume v3:dispo)
+//					{
+//						if(v)
+//						
+//					}
+//					
+//				}
+				
+			}
+			else
+			{
+				System.out.println("Impossible de rentrer le volume : " + v.toString());
+			}
+		}
+			
+	
+	}
+}

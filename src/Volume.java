@@ -12,6 +12,16 @@ public class Volume implements Cloneable {
 		private static int id_next = 0;
 		private int id;
 		
+		private boolean place;
+		
+		public boolean isPlace() {
+			return place;
+		}
+
+		public void setPlace(boolean place) {
+			this.place = place;
+		}
+
 		public Volume (double x, double y, double z, double largeur, double hauteur, double profondeur)
 		{
 			this.x = x;
@@ -20,7 +30,8 @@ public class Volume implements Cloneable {
 			this.largeur = largeur;
 			this.profondeur = profondeur;
 			this.z = z;
-			this.id = this.id_next++;
+			this.id = Volume.id_next++;
+			this.place = false;
 		}
 		
 		public double getSurfaceMax(){ 
@@ -53,7 +64,6 @@ public class Volume implements Cloneable {
 		public static Volume[] Decouper_Volume_libre(Volume container, Volume object)
 		{
 			List<Volume> l = new ArrayList<Volume>();
-			Volume tmp1, tmp2;
 			if( object.x>=container.x && object.x<=container.x+container.largeur && object.x+object.largeur<=container.x+container.largeur &&
 					object.y>=container.y && object.y<=container.y+container.hauteur && object.y+object.hauteur<=container.y+container.hauteur &&
 					object.z>=container.z && object.z<=container.z+container.profondeur && object.z+object.profondeur<=container.z+container.profondeur
@@ -179,6 +189,18 @@ public class Volume implements Cloneable {
 			
 			
 		}
+		
+		/* Compte les volumes utilisés */
+		public static int Compter_places( Volume[] volumes)
+		{
+			int res = 0;
+			for(Volume v:volumes)
+				if(v.place)
+					res++;
+			return res;
+		}
+		
+		
 		/* Trier un tableau de volumes suivant ses différentes dimensions.
 		 * 		Passer en paramètres les combinaisons suivantes:
 		 * 		x: position X du volume
@@ -238,7 +260,9 @@ public class Volume implements Cloneable {
 		}
 		public Volume clone()
 		{
-			return (new Volume(x,y,z, largeur,hauteur,profondeur));
+			Volume v = new Volume(x,y,z, largeur,hauteur,profondeur);
+			v.setPlace(place);
+			return v;
 		}
 		
 		public void basculer_90_degres_droite()

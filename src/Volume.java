@@ -71,22 +71,22 @@ public class Volume implements Cloneable {
 			{
 				/* GAUCHE */
 				if(object.x-container.x != 0) 
-					l.add(new Volume(container.x,container.y,container.z, object.x-container.x, container.hauteur, container.profondeur));
+					l.add(new Volume(container.x,container.y,container.z, object.x-container.x, container.hauteur, object.z-container.z+object.profondeur));
 				
 				/* DROITE */
 				if(container.largeur-object.largeur-object.x+container.x != 0) 
 					l.add(new Volume(object.x+object.largeur,container.y,container.z, 
-							 container.largeur-object.largeur-object.x+container.x, container.hauteur, container.profondeur));
+							 container.largeur-object.largeur-object.x+container.x, container.hauteur, object.z-container.z+object.profondeur));
 				
 				/* DESSUS */
 				if(container.y+container.hauteur != object.y+object.hauteur)
 					l.add( new Volume(object.x,object.y+object.hauteur,container.z, 
-							object.largeur, container.hauteur-object.hauteur-object.y+container.y, container.profondeur));
+							object.largeur, container.hauteur-object.hauteur-object.y+container.y, object.z-container.z+object.profondeur));
 				
 				/* DESSOUS */
 				if(container.y != object.y)
 					l.add( new Volume(object.x,container.y,container.z, 
-							object.largeur, object.y-container.y, container.profondeur));
+							object.largeur, object.y-container.y, object.z-container.z+object.profondeur));
 				
 				/* DEVANT */
 				if(object.z != container.z)
@@ -95,8 +95,8 @@ public class Volume implements Cloneable {
 				
 				/* ARRIERE */
 				if(object.z+object.profondeur != container.z+container.profondeur)
-					l.add( new Volume(object.x,object.y,object.z+object.profondeur, 
-							object.largeur, object.hauteur, container.profondeur-object.profondeur-object.z+container.z));
+					l.add( new Volume(container.x,container.y,object.z-container.z+object.profondeur, 
+							container.largeur, container.hauteur, container.profondeur - (object.z-container.z)+object.profondeur   ));
 			}
 			else
 				l.add(container);
@@ -304,7 +304,7 @@ public class Volume implements Cloneable {
 				a = getDimension(s.charAt(0));
 				b = getDimension(s.charAt(1));
 				c = getDimension(s.charAt(2));
-				if(a<=volume.largeur && b<=volume.hauteur && c<=volume.profondeur && a>0 && b>0 )
+				if(a<=volume.largeur && b<=volume.hauteur && c<=volume.profondeur)
 				{
 					v.add(new Volume(0,0,0, a ,b ,c ));
 					res = true;
@@ -316,7 +316,9 @@ public class Volume implements Cloneable {
 				largeur = v_f[0].largeur;
 				hauteur = v_f[0].hauteur;
 				profondeur = v_f[0].profondeur;
+
 			}
+			
 			return(res);
 		}
 		

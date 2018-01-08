@@ -24,36 +24,49 @@ public class MaxRects {
 			}
 			
 			dispo = new LinkedList<Volume>(Arrays.asList(Volume.Tri_dimension(dispo.toArray(new Volume[dispo.size()]), "v", "0")));
-			
 			boolean rentre = false;
-			rentre = v.rentre_dans(dispo.get(0), pref_placement);
-			if(rentre) 
+			
+			for(int i=0; i<dispo.size() && rentre==false; i++)
 			{
-				v.setPlace(true);
-				Volume container_choisi = dispo.get(0).clone();
-				v.setX((int) container_choisi.getX());
-				v.setY((int) container_choisi.getY());
-				v.setZ((int) container_choisi.getZ());
-				place.add(v.clone());
-				Volume[] new_libres = Volume.Decouper_Volume_libre(container_choisi, v);
-				dispo.remove(0);
-				for(Volume v2:new_libres)
-					dispo.add(v2.clone());
+				rentre = v.rentre_dans(dispo.get(i), pref_placement);
+				if(rentre) 
+				{
+					v.setPlace(true);
+					Volume container_choisi = dispo.get(i).clone();
+					v.setX((int) container_choisi.getX());
+					v.setY((int) container_choisi.getY());
+					v.setZ((int) container_choisi.getZ());
+					place.add(v.clone());
+					Volume[] new_libres = Volume.Decouper_Volume_libre(container_choisi, v);
+						
+					List<Volume> dispo_tmp = new LinkedList<Volume>(dispo);
+					dispo.remove(i);
+					if(new_libres.length>0)
+						if(dispo.size()==0)
+							for(Volume v2:new_libres)
+								dispo.add(v2.clone());
+						else
+							for(Volume v2:new_libres)
+							{
+								rentre = false;
+								for(Volume volume : dispo_tmp)
+									if(!rentre && !v2.clone().rentre_dans(volume, pref_placement))
+									{
+										dispo.add(v2.clone());
+										rentre=true;
+									}
+											
+							}
+					
+				}
+				else
+				{
+					//System.out.println("Impossible de rentrer le volume : " + v.toString());
+				}
 				
-				
-//				for(Volume v2:new_libres)
-//				{
-//					for(Volume v3:dispo)
-//					{
-//						if(v)
-//						
-//					}
-//					
-//				}
-			}
-			else
-			{
-				System.out.println("Impossible de rentrer le volume : " + v.toString());
+				//for(Volume v2:dispo)
+				//	System.out.println("DISPO : " + v2.toString());
+				//System.out.println();
 			}
 		}
 		return(place.toArray(new Volume[place.size()]));

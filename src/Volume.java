@@ -1,12 +1,20 @@
- import java.util.ArrayList;
+ import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
-public class Volume implements Cloneable {
+public class Volume implements Cloneable, java.io.Serializable {
 		private double x;
 		private double y;
 		private double z;
 		private double hauteur;
+		
+
 		private double largeur;
 		private double profondeur;
 		private static int id_next = 0;
@@ -59,6 +67,18 @@ public class Volume implements Cloneable {
 		public double getHauteur() 	{ return hauteur; }
 		public double getLargeur() 	{ return largeur; }
 		public double getProfondeur() {	return profondeur; }	
+		
+		public void setHauteur(double hauteur) {
+			this.hauteur = hauteur;
+		}
+
+		public void setLargeur(double largeur) {
+			this.largeur = largeur;
+		}
+
+		public void setProfondeur(double profondeur) {
+			this.profondeur = profondeur;
+		}
 		public int getID() {	return id; }
 
 		public static Volume[] Decouper_Volume_libre(Volume container, Volume object)
@@ -95,8 +115,8 @@ public class Volume implements Cloneable {
 				
 				/* ARRIERE */
 				if(object.z+object.profondeur != container.z+container.profondeur)
-					l.add( new Volume(container.x,container.y,object.z-container.z+object.profondeur, 
-							container.largeur, container.hauteur, container.profondeur - (object.z-container.z)+object.profondeur   ));
+					l.add( new Volume(container.x,container.y,object.z+object.profondeur, 
+							container.largeur, container.hauteur, container.profondeur - (object.z-container.z)-object.profondeur   ));
 			}
 			else
 				l.add(container);
@@ -109,8 +129,9 @@ public class Volume implements Cloneable {
 			Volume[] volumes = new Volume[nombreObjet];
 			Volume v;
 			for (int i=0;i<nombreObjet;i++) {
-				v = new Volume(0,0,0, (int)(Math.random()*(hauteur_max-hauteur_min)+hauteur_min)
+				v = new Volume(0,0,0
 						, (int)(Math.random()*(largeur_max- largeur_min)+largeur_min)
+						,(int)(Math.random()*(hauteur_max-hauteur_min)+hauteur_min)
 						, (int)(Math.random()*(profondeur_max- profondeur_min)+profondeur_min) );
 
 				volumes[i] = v;
@@ -123,7 +144,7 @@ public class Volume implements Cloneable {
 		 * Ces lettres sont utilisées dans toutes les fonction nécéssitant un paramétre de dimensions.
 		 * Si une autre lettre ou aucune apparaît, c'est l'ID du volume qui servira de dimension.
 		 */
-		private double getDimension(char c)
+		public double getDimension(char c)
 		{
 			if(c=='x')
 				return x;
@@ -309,6 +330,7 @@ public class Volume implements Cloneable {
 					v.add(new Volume(0,0,0, a ,b ,c ));
 					res = true;
 				}
+
 			}
 			if(res)
 			{
@@ -321,5 +343,75 @@ public class Volume implements Cloneable {
 			
 			return(res);
 		}
+		
+		
+		
+		
+		public static void to_file(Volume[] volumes, String file_path) {
+			ObjectOutputStream oos = null;
+			final FileOutputStream fichier;
+			
+			try {
+				fichier = new FileOutputStream(file_path);
+				oos = new ObjectOutputStream(fichier);
+				for(Volume volume : volumes)
+				{
+					oos.writeObject(volume);
+					oos.flush();
+				}
+				
+			} catch (final java.io.IOException e) {
+				e.printStackTrace();
+			} finally {
+				
+				try {
+					if (oos != null) {
+						oos.flush();
+						oos.close();
+					}
+				} catch (final IOException ex) {
+					ex.printStackTrace();
+				}
+			}
+
+		}
+		
+		public static Volume[] Read_from_file(String file_path) {
+			ObjectInputStream ois = null;
+
+		    try {
+		      final FileInputStream fichier = new FileInputStream(file_path);
+		      ois = new ObjectInputStream(fichier);
+		      List<Volume> volumes = new LinkedList<Volume>();
+		      try {
+		    	  Volume obj;
+		    	  while((obj = (Volume)ois.readObject()) != null)
+		    		  volumes.add(obj);
+		      }
+		      catch(final java.io.IOException e) {
+			      return volumes.toArray(new Volume[volumes.size()]);
+			      }
+
+		    } catch (final java.io.IOException e) {
+		      e.printStackTrace();
+		    } catch (final ClassNotFoundException e) {
+		      e.printStackTrace();
+		    } finally {
+		      try {
+		        if (ois != null) {
+		          ois.close();
+		        }
+		      } catch (final IOException ex) {
+		        ex.printStackTrace();
+		      }
+		      
+		    }
+		    return null;
+		}
+		
+		
+		
+		
+		
 		
 }		

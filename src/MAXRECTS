@@ -4,71 +4,139 @@ import java.util.List;
 
 public class MaxRects {
 
-	
-	public MaxRects ()
-	{
 		
-	}	
+	
+	private static List<Volume> OptimiserVolume(List<Volume> volumes)
+	{
+		Volume[] volumes_array = volumes.toArray(new Volume[volumes.size()]);
+		List<Volume> tmp = new LinkedList<Volume>(volumes);
+				
+		//volumes_array = Volume.Tri_dimension(tmp.toArray(new Volume[tmp.size()]), "x", "1");
+		tmp.clear();
+		Volume v = volumes_array[0].clone();
+		for(int i=1; i<volumes_array.length; i++)
+		{
+			
+			if(v.getX()+v.getLargeur() == volumes_array[i].getX()
+				&& v.getY()==volumes_array[i].getY() && v.getHauteur()==volumes_array[i].getHauteur() 
+				&& v.getZ()==volumes_array[i].getZ() && v.getProfondeur()==volumes_array[i].getProfondeur() )
+			{
+				v.setLargeur(volumes_array[i].getLargeur()+volumes_array[i].getLargeur());
+			}		
+			else
+				tmp.add(volumes_array[i]);
+
+		}
+		tmp.add(v);
+			
+			
+		//volumes_array = Volume.Tri_dimension(tmp.toArray(new Volume[tmp.size()]), "z", "1");
+		tmp.clear();
+		v = volumes_array[0].clone();
+		for(int i=1; i<volumes_array.length; i++)
+		{
+			
+			if(v.getZ()+v.getProfondeur() == volumes_array[i].getZ()
+				&& v.getX()==volumes_array[i].getX() && v.getLargeur()==volumes_array[i].getLargeur() 
+				&& v.getY()==volumes_array[i].getY() && v.getHauteur()==volumes_array[i].getHauteur() )
+			{
+				v.setProfondeur(volumes_array[i].getProfondeur()+volumes_array[i].getProfondeur());
+			}		
+			else
+				tmp.add(volumes_array[i].clone());
+
+		}
+		tmp.add(v);
+		
+		
+		
+		//volumes_array = Volume.Tri_dimension(tmp.toArray(new Volume[tmp.size()]), "y", "1");
+		tmp.clear();
+		v = volumes_array[0].clone();
+		for(int i=1; i<volumes_array.length; i++)
+		{
+			
+			if(v.getY()+v.getHauteur() == volumes_array[i].getY()
+				&& v.getX()==volumes_array[i].getX() && v.getLargeur()==volumes_array[i].getLargeur() 
+				&& v.getZ()==volumes_array[i].getZ() && v.getProfondeur()==volumes_array[i].getProfondeur() )
+			{
+				v.setHauteur(volumes_array[i].getHauteur()+volumes_array[i].getHauteur());
+			}		
+			else
+				tmp.add(volumes_array[i].clone());
+
+		}
+		tmp.add(v);
+		
+		
+		//return new LinkedList<Volume>(
+			//	Arrays.asList(Volume.Tri_dimension(tmp.toArray(new Volume[tmp.size()]), "v", "0")));
+		return tmp;
+	}
 	
 	public static Volume[] MaxRectsRun(Volume container, Volume[] volumes, String pref_placement)
 	{
 		List<Volume> dispo = new LinkedList<Volume>();
 		List<Volume> place = new LinkedList<Volume>();
 		dispo.add(container);
-		for(Volume v:volumes)
-		{
-			if(dispo.size()==0)
-			{
-				System.out.println("Plus de place. Arrêt.");
-				return(place.toArray(new Volume[place.size()]));
+		volumes = Volume.Tri_dimension(volumes, "vlhp", "0");
+		
+		
+		for (Volume v : volumes) {
+			
+			if (dispo.size() == 0) {
+				System.out.println("Le conteneur est plein. Arrêt.");
+				return (place.toArray(new Volume[place.size()]));
 			}
+
+			dispo = OptimiserVolume(dispo);
+			dispo = 
+				new LinkedList<Volume>(Arrays.asList(Volume.Tri_dimension(dispo.toArray(new Volume[dispo.size()]), "v", "0")));
 			
-			dispo = new LinkedList<Volume>(Arrays.asList(Volume.Tri_dimension(dispo.toArray(new Volume[dispo.size()]), "v", "0")));
-			boolean rentre = false;
 			
-			for(int i=0; i<dispo.size() && rentre==false; i++)
-			{
+
+			boolean rentre = false, rentre2;
+
+			for (int i = 0; i < dispo.size() && rentre == false; i++) {
 				rentre = v.rentre_dans(dispo.get(i), pref_placement);
-				if(rentre) 
-				{
+				if (rentre) {
 					v.setPlace(true);
 					Volume container_choisi = dispo.get(i).clone();
 					v.setX((int) container_choisi.getX());
 					v.setY((int) container_choisi.getY());
 					v.setZ((int) container_choisi.getZ());
 					place.add(v.clone());
+
 					Volume[] new_libres = Volume.Decouper_Volume_libre(container_choisi, v);
-						
-					List<Volume> dispo_tmp = new LinkedList<Volume>(dispo);
 					dispo.remove(i);
-					if(new_libres.length>0)
-						if(dispo.size()==0)
-							for(Volume v2:new_libres)
+
+					 for(Volume v2:new_libres)
+						 dispo.add(v2.clone());
+
+					 /*if (new_libres.length > 0)
+						if (dispo.size() == 0)
+							for (Volume v2 : new_libres) 
 								dispo.add(v2.clone());
 						else
-							for(Volume v2:new_libres)
+							for (Volume v2 : new_libres)
 							{
-								rentre = false;
-								for(Volume volume : dispo_tmp)
-									if(!rentre && !v2.clone().rentre_dans(volume, pref_placement))
-									{
+								rentre2 = false;
+								for (Volume volume : dispo_tmp)
+									if (!rentre2 && !v2.clone().rentre_dans(volume, pref_placement)) {
 										dispo.add(v2.clone());
-										rentre=true;
+										rentre2 = true;
 									}
-											
-							}
-					
-				}
-				else
-				{
-					//System.out.println("Impossible de rentrer le volume : " + v.toString());
-				}
-				
-				//for(Volume v2:dispo)
-				//	System.out.println("DISPO : " + v2.toString());
-				//System.out.println();
+
+							}*/
+
+				} 
+
+
 			}
 		}
-		return(place.toArray(new Volume[place.size()]));
+
+		
+		return (place.toArray(new Volume[place.size()]));
 	}
+	
 }
